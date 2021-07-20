@@ -1,0 +1,16 @@
+.inline div{
+    display: inline-block;
+}
+#rightnav img{
+    height: 20px;
+}
+#rightnav{
+    margin-left: 20%;
+}
+nav{
+  margin: 10px;
+}
+.block{
+    border: solid;
+    padding: 20px 70px;
+}
