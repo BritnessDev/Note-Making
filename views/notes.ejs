@@ -10,28 +10,33 @@
 </head>
 
 <body>
-    <header>
-        <nav class="inline">
-            <div class="block">
-                <div>
-                    <img src="../images\icons8-menu-24.png" alt="menu bar">
-                </div>
-                <div>ALL NOTES</div>
-            </div>
-            <div id="rightnav" class="block"><img src="../images\icons8-expand-50.png" alt="expand"></div>
-        </nav>
-    </header>
-    <main>
-        <div class="inline" class="block">
-            <div><img src="../images\icons8-search-24.png" alt="search icon"></div>
-            <div> <input type="text" placeholder="Search all notes and tags"></div>
-        </div>
-        <div>
-        </div>
-        <div>
+    <div class="container">
+        <div id='date1'> <label for="date">Date</label></div>
+        <div class="item"> <label for="notes">Notes</label></div>
+    </div>
+    <div class='container'>
+        <ul>
 
-        </div>
-    </main>
+            <% for (let i of notes) { %>
+                <li>
+                    <p>
+                        <%= i.date %>
+                    </p>
+                    <p>
+                        <%= i.notes %>
+                    </p>
+                </li>
+                <% } %>
+
+        </ul>
+    </div>
+    <div>
+        <form action="/save" method="POST" class="container">
+            <div class="item"><input type="date" id='date' name='date'></div>
+            <div class="item" id='field'> <input type="text" name='notes'></div>
+            <div class="item"> <input type="submit"></div>
+        </form>
+    </div>
 </body>
 
 </html>
