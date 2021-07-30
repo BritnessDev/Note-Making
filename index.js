@@ -35,43 +35,61 @@ app.get("/notes", function(req, res){
 app.get("/sign", (req, res) => {
     return res.render("sign");
 });
-app.post("/signup", function (req, res) {
-    signup.create({
-        name: req.body.name,
-        password: req.body.name,
-        email: req.body.name
-    }, function (err, newUser) {
-        if (err) {
-            console.log('Error in creating a user!')
-            return;
-        }
-        console.log('******', newUser);
-        return res.redirect('notes');
+// app.post("/signup", function (req, res) {
+//     signup.create({
+//         name: req.body.name,
+//         password: req.body.name,
+//         email: req.body.name
+//     }, function (err, newUser) {
+//         if (err) {
+//             console.log('Error in creating a user!')
+//             return;
+//         }
+//         console.log('******', newUser);
+//         return res.redirect('notes');
 
-    }
-    )
+//     }
+//     )
+// })
+app.post('/signup',(req,res)=>{
+    var newUser= new signup(req.body);
+    newUser.save()
+    .then(item=>{
+        console.log(item);
+        return res.redirect('notes')
+    })
+    .catch(err=>{
+        res.status(400).send("Error in creating a user")
+    })
 })
-app.post("/save", function (req, res) {
-    notes.create({
-        date: req.body.value,
-        notes: req.body.value
-    }, function (err, newNotes) {
-        if (err){
-            console.log('Error in creating a user!');
-        return;
-        }
-    console.log('******', newNotes);
+// app.post("/save", function (req, res) {
+//     notes.create({
+//         date: req.body.name,
+//         notes: req.body.name
+//     }, function (err, newNotes) {
+//         if (err){
+//             console.log('Error in creating a user!');
+//         return;
+//         }
+//     console.log('******', newNotes);
+//     return res.redirect('notes');
+//     })
+
+// })
+app.post("/save", (req, res) => {
+    var newNotes = new notes(req.body);
+    newNotes.save()
+    .then(item => {
+    // res.send("item saved to database");
+    
+    // console.log('******', newNotes);
+    console.log(item);
     return res.redirect('notes');
     })
-
-})
-// app.post('/save',function(req,res){
-//     let newNote=new notes({
-//         date: req.body.name,
-//         notes: req.body.valu
-//     }) 
-//     newNote.save()
-// })
+    .catch(err => {
+    res.status(400).send("unable to save to database");
+    });
+   });
 app.listen(port, () => {
     console.log('Server is listening on port', port)
 })
