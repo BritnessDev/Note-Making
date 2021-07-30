@@ -6,6 +6,7 @@ const signup = require('./models/signup')
 const notes = require('./models/notes')
 const express = require('express')
 const { notStrictEqual } = require('assert')
+const { findByIdAndDelete } = require('./models/signup')
 const app = express()
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
@@ -92,4 +93,15 @@ app.post("/save", (req, res) => {
    });
 app.listen(port, () => {
     console.log('Server is listening on port', port)
+})
+app.get('/delete',function(req,res){
+    let id=req.query.id
+    notes.findByIdAndDelete(id,function(err){
+        if(err){
+            console.log("error in deleting")
+            return;
+        }
+        return res.redirect('back')
+    })
+
 })
