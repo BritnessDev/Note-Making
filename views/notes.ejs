@@ -25,10 +25,13 @@
                     <p>
                         <%= i.notes %>
                     </p>
+                    <p>
+                        <a href="/delete/?id=<%= i.id%>"> <img src="../images/icons8-delete-24.png" alt='delete'></a>
+                    </p>
                 </li>
                 <% } %>
-
         </ul>
+
     </div>
     <div>
         <form action="/save" method="POST" class="container">
