@@ -2,14 +2,15 @@ const mongoose = require('mongoose')
 const notesSchema = new mongoose.Schema(
 {
     date: {
-    'type': 'Date'
-    // required: True
+    type: Date,
+    required: true
 },
     notes: {
-    'type': 'String'
-    // required: True
+    type: String,
+    required: true
 }
 });
 const Notes = mongoose.model('Notes', notesSchema);
 
 module.exports = Notes;
+
