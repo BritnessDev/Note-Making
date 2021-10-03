@@ -8,12 +8,12 @@
     <title>Login Page</title>
 </head>
 <body>
-    <form action=/validate method="get">
+    <form action="/login" method="POST">
         <div><label for="email">Email</label></div>
-        <div><input type="email" id="email"></div>
+        <div><input name="email" type="email" id="email"></div>
         <div><label for="password">Password</label></div>
-        <div><input type="password" id="password"></div>
-        <div> <a href="notes"><input type="Submit" id="submit"></a></div>
+        <div><input name="password" type="password" id="password"></div>
+        <div><input type="Submit" id="submit"></div>
     </form>
 </body>
 </html>
