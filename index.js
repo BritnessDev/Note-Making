@@ -1,10 +1,10 @@
 const path = require('path');
 const port = 8000;
 const db = require('./config/mongoose');
-const Users = require('./models/signupSchema');
+const User = require('./models/signupSchema');
 const Notes = require('./models/notesSchema');
+const bcrypt=require('bcrypt')
 const express = require('express');
-const { log } = require('console');
 const app = express();
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
@@ -27,40 +27,43 @@ app.get('/sign', (req, res) => {
 app.get('/notes', (req, res) => {
   return res.render('notes');
 });
-app.post('/signup', (req, res) => {
+app.post('/signup', async(req, res) => {
   const { name, password, email } = req.body;
   if (!name || !password || !email) {
     return res.status(422).json({ error: 'Not filled details' });
   }
-  const user = new Users();
+  const user = new User();
   user.name = name;
-  user.password = password;
+  user.password = await bcrypt.hash(password,12);
   user.email = email;
-  user.save((err, userdata) => {
-    if (err) console.log(err);
-    console.log(userdata);
-  });
-  // Users.find({},(err,data)=>{
+  await user.save();
+
+  // User.find({},(err,data)=>{
   //     if(err)console.log(err)
   //     console.log(data)
   // })
-
   return res.render('notes');
 });
-app.post('/login', (req, res) => {
+app.post('/login', async(req, res) => {
   const { email, password } = req.body;
   if (!email || !password) {
     return res.status(422).json({ error: 'Not filled' });
   }
-  Users.findOne({ email: email }, (err, data) => {
-    if (err) console.log(err);
-    if (data) {
-      console.log(data);
-      return res.render('notes');
-    } else {
-      return res.status(400).json({ error: 'Invalid credentials' });
+  const user=await User.findOne({email:email})
+  const isMatch=await bcrypt.compare(password,user.password)
+  console.log(user,"999999",isMatch)
+  if(user){
+    if(isMatch)
+    {
+      return res.render('notes')
     }
-  });
+    else {
+      return res.status(401).json({ error: "User does not exist" });
+    }
+  }
+  else {
+    return res.status(401).json({ error: "User does not exist" });
+  }
 });
 app.post('/save', (req, res) => {
   const { date, notes } = req.body;
