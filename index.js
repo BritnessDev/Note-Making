@@ -3,7 +3,7 @@ const dotenv = require('dotenv');
 dotenv.config();
 const db = require('./config/mongoose');
 const Note = require('./models/notesSchema');
-const PORT = process.env.PORT || 8000;
+const port = process.env.PORT || 8000;
 const express = require('express');
 const app = express();
 app.set('view engine', 'ejs');
@@ -51,6 +51,6 @@ app.post('/save', (req, res) => {
   
   res.redirect('/');
 });
-app.listen(PORT, () => {
-  console.log('Server is listening on port', PORT);
+app.listen(port, () => {
+  console.log('Server is listening on port', port);
 });
