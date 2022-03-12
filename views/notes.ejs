@@ -1,25 +1,45 @@
 <!DOCTYPE html>
-<html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/css file/notes.css">
-    <title>Notes</title>
+    <title>Todo App</title>
+    <link rel="stylesheet" href="/css file/notes.css" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Baloo+Bhai|Candal|Chewy&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css"
+        integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
 </head>
 
 <body>
-    <div class="container">
-        <div id='date1'> <label for="date">Date</label></div>
-        <div class="item"> <label for="notes">Notes</label></div>
-    </div>
-    <div>
-        <form action="/save" method="POST" class="container">
-            <div class="item"><input type="date" id='date' name='date' required></div>
-            <div class="item" id='field'> <input type="text" name='notes' required></div>
-            <div class="item"> <input type="submit"></div>
-        </form>
+    <div class="todo-container">
+        <h2>To-Do List</h2>
+        <div class="todo">
+            <form action="/save" method="POST" class="todo-header">
+                <input type="text" name="content">
+                <button type="submit"><span class="fas fa-plus"></span></button>
+            </form>
+            <ul class="todo-list">
+                <% notesArray.forEach(details=> { %>
+                    <% if (details._id==idTask) { %>
+                        <li class="todo-list-item">
+                            <form action="/edit/<%= details._id %>" method="POST">
+                                <input type="text" value="<%= details.content %>" name="content">
+                                <button type="submit">Confirm</button>
+                                <a href="/notes" class="cancel">Cancel</a>
+                            </form>
+                        </li>
+                        <% } else { %>
+                            <li class="todo-list-item">
+                                <div class="todo-list-item-name">
+                                    <%= details.content %>
+                                </div>
+                                <a href="/edit/<%= details._id %>" class="edit"> <span class="fas fa-edit"></span>
+                                </a>
+                                <a href="/remove/<%= details._id %>" class="remove"> <span class="fas fa-times"></span>
+                                </a>
+                            </li>
+                            <% } %>
+                                <% }) %>
+            </ul>
+        </div>
     </div>
 </body>
 

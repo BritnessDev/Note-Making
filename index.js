@@ -1,33 +1,35 @@
 const path = require('path');
-const port = process.env.PORT;
+const dotenv = require('dotenv');
+dotenv.config();
 const db = require('./config/mongoose');
 const User = require('./models/signupSchema');
-const Notes = require('./models/notesSchema');
+const Note = require('./models/notesSchema');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const express = require('express');
 const app = express();
-require('dotenv').config();
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 app.use(express.static('assets'));
 app.use(express.urlencoded({ extended: true }));
 app.get('/', (req, res) => {
-  return res.render('index');
+   res.render('index');
 });
 app.get('/index', (req, res) => {
-  return res.render('index');
+   res.render('index');
 });
 app.get('/login', (req, res) => {
   console.log(req.body);
 
-  return res.render('login');
+  res.render('login');
 });
 app.get('/sign', (req, res) => {
-  return res.render('sign');
+  res.render('sign');
 });
 app.get('/notes', (req, res) => {
-  return res.render('notes');
+  Note.find({},(err,notes)=>{
+    res.render('notes',{notesArray:notes,idTask:0});
+  })
 });
 app.post('/signup', async (req, res) => {
   const { name, password, email } = req.body;
@@ -39,11 +41,6 @@ app.post('/signup', async (req, res) => {
   user.password = await bcrypt.hash(password, 12);
   user.email = email;
   await user.save();
-
-  // User.find({},(err,data)=>{
-  //     if(err)console.log(err)
-  //     console.log(data)
-  // })
   return res.render('notes');
 });
 app.post('/login', async (req, res) => {
@@ -64,24 +61,40 @@ app.post('/login', async (req, res) => {
     return res.status(401).json({ error: 'User does not exist' });
   }
 });
+app.get('/remove/:id',(req,res) => {
+  const id=req.params.id;
+  Note.findByIdAndRemove(id, err => {
+    if (err) return res.send(500, err);
+    res.redirect("/notes");
+    });
+})
+app.get('/edit/:id',(req, res) => {
+const id = req.params.id;
+Note.find({}, (err, not) => {
+res.render("notes", { notesArray: not, idTask: id });
+});
+})
+app.post('/edit/:id',(req, res) => {
+const id = req.params.id;
+Note.findByIdAndUpdate(id, { content: req.body.content }, err => {
+if (err) return res.send(500, err);
+res.redirect("/notes");
+});
+});
 app.post('/save', (req, res) => {
-  const { date, notes } = req.body;
-  if (!date || !notes) {
+  const {content} = req.body;
+  if (!content) {
     return res.status(422).json({ error: 'Not filled' });
   }
-  const Note = new Notes();
-  Note.date = date;
-  Note.notes = notes;
-  Note.save((err, note) => {
+  const note = new Note();
+  note.content = content;
+  note.save((err, not) => {
     if (err) console.log(err);
-    else console.log(note);
+    else console.log(not);
   });
-  // Notes.find({}, function(err, data){
-  //     if(err)console.log(err);
-  //     console.log(data);
-  // });
+  
   res.redirect('notes');
 });
-app.listen(port, () => {
-  console.log('Server is listening on port', port);
+app.listen(process.env.PORT, () => {
+  console.log('Server is listening on port', process.env.PORT);
 });
